@@ -29,9 +29,9 @@
 local MusicUtil = require "musicutil"
 local UI = require "ui"
 local BeatClock = require "beatclock"
-local MollyThePoly = require "molly_the_poly/lib/molly_the_poly_engine"
+mxsamples_=include("mx.samples2/lib/mx.samples2")
 
-engine.name = "MollyThePoly"
+engine.name = "MxSamples2"
 
 local options = {}
 options.OUTPUT = {"Audio", "MIDI", "Audio + MIDI", "Crow Out 1+2", "Crow ii JF"}
@@ -210,7 +210,8 @@ local function note_on(note_num)
   
   -- Audio engine out
   if params:get("output") == 1 or params:get("output") == 3 then
-    engine.noteOn(note_num, MusicUtil.note_num_to_freq(note_num), note_midi_vel / 127)
+    --engine.noteOn(note_num, MusicUtil.note_num_to_freq(note_num), note_midi_vel / 127)
+     mxsamples:on({name=_path.audio.."mx.samples/"..params:string("instrument"),midi=note_num,velocity=note_midi_vel})
   end
   
   -- MIDI out
@@ -236,7 +237,8 @@ local function note_off(note_num)
   
   -- Audio engine out
   if params:get("output") == 1 or params:get("output") == 3 then
-    engine.noteOff(note_num)
+    --engine.noteOff(note_num)
+     mxsamples:off({name=_path.audio.."mx.samples/"..params:string("instrument"),midi=note_num,velocity=note_midi_vel})
   end
   
   -- MIDI out
@@ -249,7 +251,7 @@ end
 local function all_notes_kill()
   
   -- Audio engine out
-  engine.noteKillAll()
+  -- engine.noteKillAll()
   
   -- MIDI out
   if (params:get("output") == 2 or params:get("output") == 3) then
@@ -710,7 +712,7 @@ function key(n, z)
       
         -- Time
         if pages.index == 1 then
-          MollyThePoly.randomize_params("lead")
+          --MollyThePoly.randomize_params("lead")
         
         -- Pitch
         elseif pages.index == 2 then
@@ -850,7 +852,12 @@ end
 
 
 function init()
-  
+  mxsamples=mxsamples_:new()
+
+  instruments = mxsamples:list_instruments()
+
+  params:add_option("instrument","instrument",instruments,1)
+
   for x = 1, 16 do
     grid_leds[x] = {}
     trails[x] = {}
@@ -999,7 +1006,7 @@ function init()
   
   -- Engine params
   
-  MollyThePoly.add_params()
+  -- MollyThePoly.add_params()
   
   -- UI
   
