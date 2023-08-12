@@ -238,7 +238,9 @@ local function note_off(note_num)
   -- Audio engine out
   if params:get("output") == 1 or params:get("output") == 3 then
     --engine.noteOff(note_num)
-     mxsamples:off({name=_path.audio.."mx.samples/"..params:string("instrument"),midi=note_num,velocity=note_midi_vel})
+    for _,v in ipairs(instruments) do 
+     mxsamples:off({name=_path.audio.."mx.samples/"..v,midi=note_num,velocity=note_midi_vel})
+    end
   end
   
   -- MIDI out
